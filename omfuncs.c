@@ -174,8 +174,9 @@ int setvalue(dhcpctl_handle *p_obj, dhcpctl_data_string *p_val, char *valspec){
     case op_cltt:
 	strptime(val, "%a %b %d %T %Y", &timestruct);
 	timeval=mktime(&timestruct);
+	netint=htonl((unsigned long)timeval);
 	omapi_data_string_new(&value, 4, MDL);
-	memcpy(value->value, &timeval, 4);
+	memcpy(value->value, &netint, 4);
 	break;
     case op_name:
     case op_client_hostname:
@@ -215,8 +216,9 @@ char *valuetostring(dhcpctl_data_string *p_val, omprop proptype, char *buf, int 
     case op_tstp:
     case op_tsfp:
     case op_cltt:
-	memcpy(&thetime, value->value, value->len);
-	ctime_r(&thetime,buf);
+	memcpy(&netint, value->value, value->len);
+	hostint=ntohl(netint);
+	ctime_r((time_t *) &hostint,buf);
 	buf[strlen(buf)-1]='\0';
 	break;
     case op_ipaddr:

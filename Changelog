@@ -1,3 +1,7 @@
+* 2015-09-22 David L. Parsley <parsley@linuxjedi.org> 0.4.10
+- Incorporate patch from Ed Ravin <eravin@panix.com>
+that corrects date output
+
 * 2015-09-22 David L. Parsley <parsley@linuxjedi.org> 0.4.9
 - Update Makefile for building within a dhcp build tree
 - Add README-Compiling
