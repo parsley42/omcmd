@@ -1,0 +1,31 @@
+* 2015-09-22 David L. Parsley <parsley@linuxjedi.org> 0.4.9
+- Update linking and headers for newer dhcp and bind
+
+* 2008-11-12 David L. Parsley <parsley@linuxjedi.org> 0.4.8
+- Add port option
+- Add host statements and group objects, patch from Caciano Machado
+
+* 2005-12-08 David L. Parsley <parsley@linuxjedi.org> 0.4.7
+- On error, write error to stderr
+- Add update synonym for modify
+- Add ability to set date/time fields (which does no good w/ dhcp-3.0.1)
+- Update the README with info on dhcp-omapifree.patch
+
+* 2005-10-10 David L. Parsley <parsley@linuxjedi.org> 0.4.6
+- Wrote man page
+- created synonyms for commands
+
+* 2004-08-30 David L. Parsley <parsley@linuxjedi.org> 0.4.5
+- Fixed STUPID typo bug checking string length
+
+* 2004-08-12 David L. Parsley <parsley@linuxjedi.org> 0.4.4
+- Better error checking for length in -K option
+- Increased MAXLEN to 255 (from 32 - what was I thinking?)
+
+* 2004-08-05 David L. Parsley <parsley@linuxjedi.org> 0.4.3
+- Add omcmd.spec for packaging
+
+* 2004-07-29 David L. Parsley <parsley@linuxjedi.org> 0.4.2
+- Use htonl & ntohl for int values
+- Clean up README
+- Clean up #includes

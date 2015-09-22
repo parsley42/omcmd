@@ -1,0 +1,133 @@
+.\" Man page for omcmd
+.TH "omcmd" "1" "2005 Oct 10" "Free Software" "" 
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+omcmd \- Update ISC dhcpd dynamically with OMAPI
+.SH SYNOPSIS
+\fBomcmd\fP [\-k <keyname> <secret> | \-K <\fIkeyfile\fP> ] [\-p port] [\-s server] [\-v] <command> <objtype> <args>
+.SH "DESCRIPTION"
+\fBomcmd\fP is a scriptable CLI program for performing actions on a running 
+ISC dhcp server using OMAPI.  It can currently be used to create, remove, 
+modify and look up hosts and leases.  Note that host and lease objects have
+persistent storage in the leases file.
+
+The keyname and secret are the same as the values in the dhcpd.conf file;
+the secret should be base64 encoded.  If using a 'keyfile', line1=keyname,
+line2=secret.
+
+The -v option affects the lookup|find command, see below.
+.SS "Commands"
+In the command descriptions below, 'indexproperty' is used to indicate a
+property that specifies the object uniquely to the dhcp server.  I.e.,
+ip-address uniquely specifies a lease object.
+.IP "\fBlookup|find\fP <objecttype> <indexproperty=value> [property ...]"
+Look up a lease or host.  For leases, specify the ip-address or
+hardware-address.  For hosts, specify the name or hardware-address.  If
+property names are specified after the lookup property, only those property
+values will be returned, one per line.  if -v is given, they will be returned
+in property=value format.
+.IP "\fBcreate|add|new\fP <objecttype> <property=value> ..."
+Create a new object, usually a 'host'.  For hosts, specify name,
+hardware-address, hardware-type (usually 1 for ethernet), and optionally
+ip-address.
+.IP "\fBremove|delete\fP <objecttype> <indexproperty=value>"
+Delete an object, usually a host.  For hosts, you must specify name or
+hardware-address.  At the time this was written, you cannot delete a lease;
+you can, however, modify the lease and change it's 'state' to 'free', but this
+requires a patched version of dhcp (as of dhcp-3.0.1, see the README included
+with the source).  See \fBmodify\fP, below.
+.IP "\fBmodify|change|update\fP <objecttype> <indexproperty=value> <property=value> ..."
+Change an object.  Mostly used to change the 'state' of a 'lease'.
+.SS "Object Types"
+Currently omcmd only has support for host and lease object types.
+.SS "Properties"
+The following properties are known to omcmd:
+.br
+state - the lease state
+.br
+ip-address
+.br
+dhcp-client-identifier
+.br
+client-hostname
+.br
+hardware-address
+.br
+hardware-type - normally 1 for ethernet
+.br
+ends
+.br
+tstp
+.br
+tsfp
+.br
+cltt
+.br
+name - unique name for host object
+.br
+statements
+.br
+known
+
+Note: check the dhcp man pages listed in SEE ALSO, below, for more information
+on the properties and object types.
+
+.SH "RETURN VALUE"
+On success, omcmd returns 0.  For an OMAPI error, it returns the isc_result_t
+value.  (See include/isc-dhcp/result.h).  Command syntax errors return -1.
+.SH EXAMPLES
+Lookup a lease and print everything:
+
+.B "$ ./omcmd -K ~/keyfile -s myserver lookup lease ip-address=10.20.93.155"
+.br
+state=active
+.br
+ip-address=10.20.93.155
+.br
+dhcp-client-identifier=01:00:e0:b8:72:8f:90
+.br
+client-hostname=AU1201
+.br
+hardware-address=00:e0:b8:72:8f:90
+.br
+hardware-type=1
+.br
+ends=Sat Jul 31 15:54:28 2004
+.br
+tstp=Wed Dec 31 19:00:00 1969
+.br
+tsfp=Wed Dec 31 19:00:00 1969
+.br
+cltt=Wed Dec 31 19:00:00 1969
+.br
+
+Lookup a lease and just give the hardware-address:
+
+.B "$ ./omcmd -K ~/keyfile -s myserver lookup lease ip-address=10.20.93.155 hardware-address"
+.br
+00:e0:b8:72:8f:90
+.br
+
+Change a lease state to free:
+
+.B "$ ./omcmd -K ~/keyfile -s myserver modify lease ip-address=10.20.162.42 state=free"
+
+Create a new host:
+
+.B "$ ./omcmd -K ~/keyfile -s myserver create host ip-address=10.20.162.242 name=ioreth hardware-type=1 hardware-address=00:e0:b8:50:0f:ab"
+
+Note: ip-address is optional.
+
+Delete that host:
+
+.B "$ ./omcmd -K ~/keyfile -s myserver remove host name=ioreth"
+
+.SH "SEE ALSO"
+.\" Always quote multiple words for .SH
+.B dhcpd(8), omshell(1)
+.SH BUGS
+Report all bugs (and send all patches) to parsley@linuxjedi.org.
+.SH AUTHOR
+\fBomcmd\fP was written by David L. Parsley (parsley@linuxjedi.org) for use
+with a custom 'netreg' system.

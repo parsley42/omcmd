@@ -1,0 +1,10 @@
+omcmd NEWS - history of user-visible changes, 2005-01-03
+
+Version 0.4.8
+* Allow statements for hosts (patch from Caciano Machado)
+* Support for group objects (patch from Caciano Machado)
+* Add -p option to specify port
+
+Version 0.4.7
+* Print errors to stdout
+* Allow times to be specified (not currently supported in server 3.0.1)

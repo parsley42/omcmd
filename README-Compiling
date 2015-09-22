@@ -1,0 +1,44 @@
+2015-09-22
+
+To compile:
+1) Download and do a local build of the target version of dhcp:
+
+~/dhcp/dhcp-4.2.8$ ./configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+...
+
+~/dhcp/dhcp-4.2.8$ make
+Making all in bind
+make[1]: Entering directory `/home/dparsley/dhcp/dhcp-4.2.8/bind'
+Configuring BIND Export libraries for DHCP.
+...
+
+(Note that the dhcp build creates a compatible set of libraries for omshell,
+which also works for omcmd)
+
+2) Untar/gzip the latest omcmd in the dhcp directory, and build:
+
+~/dhcp/dhcp-4.2.8$ tar xzvf ../omcmd-0.4.9.tar.gz 
+omcmd-0.4.9/
+...
+
+~/dhcp/dhcp-4.2.8/omcmd-0.4.9$ make
+cc  -o omcmd omcmd.c base64.o omfuncs.o ../dhcpctl/libdhcpctl.a ../common/libdhcp.a ../omapip/libomapi.a ../bind/lib/libdns.a ../bind/lib/libisc.a
+
+3) (Optional) The resulting binary is a little large, close to 7M,
+   so you might want to strip it:
+
+~/dhcp/dhcp-4.2.8/omcmd-0.4.9$ ls -Flah omcmd
+-rwxrwxr-x 1 dparsley dparsley 6.8M Sep 22 14:06 omcmd*
+
+~/dhcp/dhcp-4.2.8/omcmd-0.4.9$ strip omcmd
+
+~/dhcp/dhcp-4.2.8/omcmd-0.4.9$ ls -Flah omcmd
+-rwxrwxr-x 1 dparsley dparsley 1.4M Sep 22 14:06 omcmd*
+
+NOTE: As I no longer run isc dhcp, this is UNTESTED - but hey, at least it
+compiles!
+
+Cheers,
+-David

@@ -1,0 +1,109 @@
+2005-12-08 David L. Parsley <parsley@linuxjedi.org> version 0.4.7
+License: GPL, see COPYING for full text.
+
+Untill I write a manpage, here's all the docs for omcmd.
+
+omcmd is a scriptable CLI program for performing actions on a running ISC dhcp
+server using OMAPI.  It can currently be used to create, remove, modify and 
+look up hosts and leases.
+
+Note that these objects are 'stored' in the dhcpd.leases file.
+
+Building:
+You must install dhcp-devel first.  Check the locations of the include files
+for dhcp.  I don't know squat about autoconf & friends, just type 'make' and
+correct any errors you get. ;-)
+
+Usage: omcmd [-k keyname secret | -K keyfile ] [-s server] [-v] \
+  <command> <objtype> <args>
+
+The keyname & secret are the same as the values in the dhcpd.conf file;
+the secret is base64 encoded.  If using a 'keyfile', line1=keyname, 
+line2=secret.
+
+-v for verbose output (see below)
+
+command is one of:
+    lookup - find an object and print  properties
+    create - create a new object
+    remove - remove an object
+    modify - modify an object
+
+objtype is one of:
+    host
+    lease
+
+For all commands, the first arg should be of the form property=value, and
+should be a 'lookup' value (see OMAPI in man dhcpd), i.e.: 
+ip-address=10.20.30.40.  For remove, this is the only required argument.
+
+For create & modify, the remaining arguments are more property=value strings
+supported properties so far:
+    ip-address - e.g. "ip-address=10.20.30.40"
+    hardware-type - e.g. "hardware-type=1" (you almost always use this when 
+	specifying the hardware-address)
+    hardware-address - e.g. "hardware-address=00:10:20:30:40:50"
+    state - e.g. "state=free" (you can use this to free an active lease**)
+    name - e.g. "name=mylaptop"
+    client-hostname (similar)
+For the appropriate properties for an object type, see 'man dhcp'.
+
+** dhcp-3.0.1 won't allow leases to be freed dynamically as-is.  I've included
+a (short) dhcp-omapifree.patch, that, when applied, will actually free leases
+if state is set to 'free'.
+
+For 'lookup', you can leave off remaining args, and it will print what it
+finds (in verbose mode).  You can also specify property names you want found,
+and it will spit them out one per line (non-verbose mode), or as
+property=value strings (verbose). Lookup properties supported are: ends, tstp,
+tsfp, cltt, ip-address, client-hostname, name, dhcp-client-identifier,
+hardware-address, hardware-type, and state.
+
+Currenlty, only host & lease objects are supported, but adding support for
+other known object types shouldn't be hard.
+
+The return value is 255 for invalid usage, otherwise a value of type
+isc_result_t.
+(see include/isc-dhcp/result.h)
+
+Examples:
+
+Lookup a lease and print everything:
+
+$ ./omcmd -K ~/keyfile -s myserver lookup lease ip-address=10.20.93.155
+state=active
+ip-address=10.20.93.155
+dhcp-client-identifier=01:00:e0:b8:72:8f:90
+client-hostname=AU1201
+hardware-address=00:e0:b8:72:8f:90
+hardware-type=1
+ends=Sat Jul 31 15:54:28 2004
+tstp=Wed Dec 31 19:00:00 1969
+tsfp=Wed Dec 31 19:00:00 1969
+cltt=Wed Dec 31 19:00:00 1969
+
+Lookup a lease and just give the hardware-address:
+
+$ ./omcmd -K ~/keyfile -s myserver lookup lease ip-address=10.20.93.155 hardware-address
+00:e0:b8:72:8f:90
+
+Change a lease state to free:
+
+$ ./omcmd -K ~/keyfile -s myserver modify lease ip-address=10.20.162.42 state=free
+
+Note: I wasn't able to 'remove' a lease; the best I could figure was to 'free'
+it.
+Note2: the first prop=value is used to look up the object, all following will
+update the object.
+
+Create a new host:
+
+$ ./omcmd -K ~/keyfile -s myserver create host ip-address=10.20.162.242 name=ioreth hardware-type=1 hardware-address=00:e0:b8:50:0f:ab
+
+Note: ip-address is optional.
+
+Delete that host:
+
+$ ./omcmd -K ~/keyfile -s myserver remove host name=ioreth
+
+Feedback & patches to David L. Parsley, parsley@linuxjedi.org
