@@ -1,5 +1,6 @@
 * 2015-09-22 David L. Parsley <parsley@linuxjedi.org> 0.4.9
-- Update linking and headers for newer dhcp and bind
+- Update Makefile for building within a dhcp build tree
+- Add README-Compiling
 
 * 2008-11-12 David L. Parsley <parsley@linuxjedi.org> 0.4.8
 - Add port option

@@ -1,7 +1,9 @@
-2005-12-08 David L. Parsley <parsley@linuxjedi.org> version 0.4.7
+2015-09-22 David L. Parsley <parsley@linuxjedi.org> version 0.4.9
 License: GPL, see COPYING for full text.
 
-Untill I write a manpage, here's all the docs for omcmd.
+NOTE: I no longer run my own dhcp server, so can only give minimal time
+to this project. I'll gladly read and accept reasonable patches with
+explanations.
 
 omcmd is a scriptable CLI program for performing actions on a running ISC dhcp
 server using OMAPI.  It can currently be used to create, remove, modify and 
