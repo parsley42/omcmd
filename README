@@ -11,10 +11,7 @@ look up hosts and leases.
 
 Note that these objects are 'stored' in the dhcpd.leases file.
 
-Building:
-You must install dhcp-devel first.  Check the locations of the include files
-for dhcp.  I don't know squat about autoconf & friends, just type 'make' and
-correct any errors you get. ;-)
+Building: see README-Compiling
 
 Usage: omcmd [-k keyname secret | -K keyfile ] [-s server] [-v] \
   <command> <objtype> <args>
